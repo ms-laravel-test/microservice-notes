@@ -2,67 +2,38 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Note;
 use App\Http\Requests\StoreNoteRequest;
 use App\Http\Requests\UpdateNoteRequest;
+use App\Models\Note;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
+use Miladshm\ControllerHelpers\Http\Traits\HasDestroy;
+use Miladshm\ControllerHelpers\Http\Traits\HasShow;
+use Miladshm\ControllerHelpers\Http\Traits\HasStore;
+use Miladshm\ControllerHelpers\Http\Traits\HasUpdate;
 
 class NoteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    use HasShow, HasStore, HasUpdate, HasDestroy;
+
     public function index($user_id): JsonResponse
     {
-        $notes = Note::query()->where('user_id' , $user_id)->get();
-        return response()->json($notes);
+        return response()->json(Note::whereUserId($user_id)->get());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    private function model(): Model
     {
-        //
+        return new Note();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreNoteRequest $request)
+    private function requestClass(): FormRequest
     {
-        //
+        return new StoreNoteRequest();
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Note $note)
+    protected function updateRequestClass(): ?FormRequest
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Note $note)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateNoteRequest $request, Note $note)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Note $note)
-    {
-        //
+        return new UpdateNoteRequest();
     }
 }
