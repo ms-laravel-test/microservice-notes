@@ -5,15 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\Note;
 use App\Http\Requests\StoreNoteRequest;
 use App\Http\Requests\UpdateNoteRequest;
+use Illuminate\Http\JsonResponse;
 
 class NoteController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($user_id): JsonResponse
     {
-        //
+        $notes = Note::query()->where('user_id' , $user_id)->get();
+        return response()->json($notes);
     }
 
     /**
